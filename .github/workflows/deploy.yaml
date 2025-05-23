@@ -6,6 +6,7 @@ on:
 
 jobs:
   deploy:
+    name: Deploy CloudFormation
     runs-on: ubuntu-latest
 
     permissions:
@@ -37,15 +38,15 @@ jobs:
         if [[ $BRANCH == 'main' || $BRANCH == 'master' ]]; then
           echo "DEPLOYMENT_ENV=prd" >> "$GITHUB_ENV"
         fi
-        
+
         echo "Deployment role: ${{ env.DEPLOYMENT_ROLE }}"
         echo "AWS region: ${{ secrets.AWS_REGION }}"
 
     - name: Configure AWS credentials from OIDC
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: ${{ env.DEPLOYMENT_ROLE }}
-        aws-region: ${{ secrets.AWS_REGION }}  # or your preferred region
+        role-to-assume: arn:aws:iam::492803101350:role/aws-github-ci-cd-role
+        aws-region: us-east-1  # or your preferred region
 
     - name: Deploy CloudFormation Stack
       run: |
