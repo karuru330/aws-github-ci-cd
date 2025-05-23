@@ -33,13 +33,13 @@ jobs:
       env:
         DEPLOYMENT_ROLE : ${{ secrets.DEPLOYMENT_ROLE }}
       
-      echo "Deployment role: ${{ env.DEPLOYMENT_ROLE }}"
-      echo "AWS region: ${{ secrets.AWS_REGION }}"
-      
       run: |
         if [[ $BRANCH == 'main' || $BRANCH == 'master' ]]; then
           echo "DEPLOYMENT_ENV=prd" >> "$GITHUB_ENV"
         fi
+        
+        echo "Deployment role: ${{ env.DEPLOYMENT_ROLE }}"
+        echo "AWS region: ${{ secrets.AWS_REGION }}"
 
     - name: Configure AWS credentials from OIDC
       uses: aws-actions/configure-aws-credentials@v4
