@@ -24,7 +24,7 @@ jobs:
         cfn-lint --version
         cfn-lint -t ./template.yaml
 
-    - name: Set environment variables:
+    - name: Set environment variables
       env:
         DEPLOYMENT_ROLE : ${{ secrets.DEPLOYMENT_ROLE }}
 
