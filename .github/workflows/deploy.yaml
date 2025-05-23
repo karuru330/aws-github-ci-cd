@@ -28,7 +28,7 @@ jobs:
       run: |
         export SAM_CLI_TELEMETRY=0
         echo "BRANCH=$(echo $GITHUB_REF | cut -d'/' -f 3)" >> $GITHUB_ENV
-        
+
     - name: Set environment variables
       env:
         DEPLOYMENT_ROLE : ${{ secrets.DEPLOYMENT_ROLE }}
@@ -36,6 +36,7 @@ jobs:
       run: |
         if [[ $BRANCH == 'main' || $BRANCH == 'master']]; then
           echo "DEPLOYMENT_ENV=prd" >> "$GITHUB_ENV"
+        fi
 
     - name: Configure AWS credentials from OIDC
       uses: aws-actions/configure-aws-credentials@v4
