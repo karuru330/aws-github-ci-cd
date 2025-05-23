@@ -1,5 +1,7 @@
 # aws-github-ci-cd
 
+Initial Setup:
+
 1. Setup AWS IAM Role for GitHub OIDC
 
 Step 1.1: Sign in to AWS Console
@@ -66,6 +68,7 @@ Or use a custom policy like this:
     }
   ]
 }
+
 Click Next.
 
 
@@ -112,3 +115,53 @@ YOUR_ORG_OR_USER/YOUR_REPO_NAME → your GitHub org/user and repo name
 
 Click Update policy
 
+
+Step 2: Configure GitHub Actions Workflow
+Now create or update the GitHub Actions workflow in your repo.
+
+Step 2.1: Add Workflow YAML
+
+Create a file at: .github/workflows/deploy.yml
+
+name: Deploy CloudFormation using OIDC
+
+on:
+  push:
+    branches: [main]  # or your deployment branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write    # Needed for OIDC
+      contents: read     # Needed to checkout code
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials from OIDC
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::YOUR_AWS_ACCOUNT_ID:role/GitHubActionsOIDCDeployer
+        aws-region: us-east-1  # or your preferred region
+
+    - name: Deploy CloudFormation Stack
+      run: |
+        aws cloudformation deploy \
+          --template-file template.yaml \
+          --stack-name my-stack-name \
+          --capabilities CAPABILITY_NAMED_IAM \
+          --no-fail-on-empty-changeset
+Replace:
+
+YOUR_AWS_ACCOUNT_ID with your AWS account ID
+
+template.yaml with your actual CloudFormation template file name
+
+Step 2.2: Commit and Push
+
+Commit the .github/workflows/deploy.yml file to your repo
+
+Push to the branch (e.g., main) to trigger the workflow

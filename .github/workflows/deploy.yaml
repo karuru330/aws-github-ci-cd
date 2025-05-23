@@ -1,0 +1,43 @@
+name: Deploy CloudFormation using OIDC
+
+on:
+  push:
+    branches: [main]  # or your deployment branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write    # Needed for OIDC
+      contents: read     # Needed to checkout code
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: CF lint actions
+      uses: ScottBrenner/cfn-lint-action@v2.4.1
+
+    - name: Print the CF linter version & run linter
+      run: |
+        cfn-lint --version
+        cfn-lint -t ./template.yaml
+
+    - name: Set environment variables:
+      env:
+        DEPLOYMENT_ROLE : ${{ secrets.DEPLOYMENT_ROLE }}
+
+    - name: Configure AWS credentials from OIDC
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ env.DEPLOYMENT_ROLE }}
+        aws-region: ${{ secrets.AWS_REGION }}  # or your preferred region
+
+    - name: Deploy CloudFormation Stack
+      run: |
+        aws cloudformation deploy \
+          --template-file template.yaml \
+          --stack-name aws-githu-ci-cd-stack \
+          --capabilities CAPABILITY_NAMED_IAM \
+          --no-fail-on-empty-changeset
