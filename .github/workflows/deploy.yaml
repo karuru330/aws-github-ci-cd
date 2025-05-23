@@ -45,8 +45,8 @@ jobs:
     - name: Configure AWS credentials from OIDC
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: ${{ env.DEPLOYMENT_ROLE }}
-        aws-region: ${{ secrets.AWS_REGION }}  # or your preferred region
+        role-to-assume: arn:aws:iam::492803101350:role/aws-github-ci-cd-role
+        aws-region: us-east-1  # or your preferred region
 
     - name: Deploy CloudFormation Stack
       run: |
