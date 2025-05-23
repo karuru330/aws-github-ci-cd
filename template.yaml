@@ -1,2 +1,13 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: An empty CloudFormation stack for testing CI/CD pipeline
+Description: cloudformation template to deploy resources to aws
+
+Resources:
+  MyS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub "aws-github-ci-cd-data"
+
+Outputs:
+  BucketName:
+    Description: Name of the created S3 bucket
+    Value: !Ref MyS3Bucket
