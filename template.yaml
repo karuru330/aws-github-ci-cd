@@ -1,4 +1,2 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: An empty CloudFormation stack for testing CI/CD pipeline
-
-Resources: {}

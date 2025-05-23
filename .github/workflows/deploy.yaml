@@ -1,4 +1,4 @@
-name: Deploy CloudFormation using OIDC
+name: Deploy Infrastructure to AWS
 
 on:
   push:
@@ -32,7 +32,7 @@ jobs:
 
     - name: Set environment variables
       env:
-        DEPLOYMENT_ROLE : ${{ secrets.DEPLOYMENT_ROLE }}
+        DEPLOYMENT_ROLE: ${{ secrets.DEPLOYMENT_ROLE }}
       
       run: |
         if [[ $BRANCH == 'main' || $BRANCH == 'master' ]]; then
@@ -45,8 +45,8 @@ jobs:
     - name: Configure AWS credentials from OIDC
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: arn:aws:iam::492803101350:role/aws-github-ci-cd-role
-        aws-region: us-east-1  # or your preferred region
+        role-to-assume: ${{ env.DEPLOYMENT_ROLE }}
+        aws-region: ${{ AWS_REGION }}  # or your preferred region
 
     - name: Deploy CloudFormation Stack
       run: |
