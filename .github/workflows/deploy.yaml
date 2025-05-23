@@ -34,7 +34,7 @@ jobs:
         DEPLOYMENT_ROLE : ${{ secrets.DEPLOYMENT_ROLE }}
       
       run: |
-        if [[ $BRANCH == 'main' || $BRANCH == 'master']]; then
+        if [[ $BRANCH == 'main' || $BRANCH == 'master' ]]; then
           echo "DEPLOYMENT_ENV=prd" >> "$GITHUB_ENV"
         fi
 
